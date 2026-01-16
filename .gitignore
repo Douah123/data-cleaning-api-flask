@@ -6,3 +6,5 @@ outputs/
 reports/
 uploads/
 templates/
+schemas/
+utils/
