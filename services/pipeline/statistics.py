@@ -1,3 +1,6 @@
+#ce fichier nous permet d'effectuer des calculs de toutes les stats que contient le fichier uploader
+#et sera appelé par pipeline_runner.py(notre fichier orchestre)
+
 import pandas as pd
 import numpy as np
 

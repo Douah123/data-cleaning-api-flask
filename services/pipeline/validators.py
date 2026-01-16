@@ -1,3 +1,7 @@
+#ce fichier nous permet de valider les options que l'utilisateurs va uploader avec le fichier notamment
+#s'il choisit de normaliser ou pas si oui il devra choisir la methode normalisation
+#ce fichier sera appelé dans la route clean_route
+
 def valider_options(options):
     if options is None:
         return {

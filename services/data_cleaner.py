@@ -1,3 +1,6 @@
+#ce fichier est chargé du  nettoyage du fichier uploader par le User et sera appelé dans notre 
+#pipeline_runner
+
 import pandas as pd
 import numpy as np 
 from unidecode import unidecode

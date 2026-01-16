@@ -1,3 +1,6 @@
+#ce fichier permet de charger le fichier uploader par le User et qui retourne un dataframe
+#et le type de fichier qui sera appelé dans notre route clean_route
+
 import pandas as pd
 from io import BytesIO
 

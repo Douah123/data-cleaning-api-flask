@@ -1,3 +1,6 @@
+#ce fichier c'est le chef d'orchestre, il appelle d'autres fonctions qui permettront de calculer
+#les statistique que contient le fichier uploader, le nettoie et retourne les stats apres nettoyage
+
 from services.data_cleaner import clean_data
 from services.normalisation import normaliser_donnees
 from services.pipeline.statistics import calcul_statt

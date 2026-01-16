@@ -1,3 +1,7 @@
+# Voici notre chef d'orchestre principal ce fichier contient notre route clean qui recoit un fichier
+#avec les options ou pas le nettoie et l'exporte avec un identifiant unique, une URL de telechargement
+# Et les statistiques avant et apres upload
+
 from flask import Blueprint, request, jsonify, request
 from services.data_cleaner import clean_data
 from services.data_loader import load_file

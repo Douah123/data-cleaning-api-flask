@@ -1,3 +1,6 @@
+#ce fichier permet de normaliser le fichier uploader par le user s'il choisit de le faire et 
+# avec la methode choisit
+
 import pandas as pd
 import numpy as np 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler

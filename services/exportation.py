@@ -1,3 +1,6 @@
+#ce fichier permet d'exporter le fichier uploader et nettoyer au User et sera appplé dans notre route 
+#clean_route
+
 import os
 import uuid
 
