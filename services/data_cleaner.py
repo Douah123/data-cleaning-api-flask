@@ -1,28 +1,25 @@
 import pandas as pd
 import numpy as np 
 from unidecode import unidecode
-from sklearn.preprocessing import StandardScaler
+
 
 def gestion_valeur_manquantes(df):
-    report = {}
 
     for col in df.columns:
-        missing_before = int(df[col].isna().sum())
+        
         if df[col].dtype == "object":
             df[col] = df[col].fillna("inconnu")
+        elif df[col].isna().mean()*100 >= 50:
+            df.drop(columns=[col], inplace=True)
         else:
-            mean_value = df[col].mean()
-            if not np.isnan(mean_value):
-                df[col].fillna(mean_value, inplace=True)
-        
-        report[col] = {
-            "valeurs_manquantes": missing_before
-        }
+            median_value = df[col].median()
+            if not np.isnan(median_value):
+                df[col].fillna(median_value, inplace=True)
 
-    return df, report
+    return df
 
 def gestion_valeur_abberantes(df):
-    report = {}
+    
     numeric_cols = df.select_dtypes(include= np.number).columns
     numeric_cols = [col for col in numeric_cols if df[col].nunique() > 2]
     for col in numeric_cols:
@@ -33,20 +30,18 @@ def gestion_valeur_abberantes(df):
         lower = Q1 - 1.5*IQR
         upper = Q3 + 1.5*IQR
 
-        outliers_detected =((df[col] < lower) | (df[col] > upper)).sum()
         df[col] = np.clip(df[col], lower, upper)
+        
 
-        report[col] = {
-            "outliers_detected": int(outliers_detected)
-        }
+        
 
-    return df, report 
+    return df
 
 def supp_doublons(df):
-    before = len(df) 
+    
     df = df.drop_duplicates()  
-    after = len(df)
-    return df, after - before
+    
+    return df
 
 
 
@@ -64,20 +59,7 @@ def normaliser_texte(df):
         df[col] = df[col].apply(normalize_text)
     return df
 
-def normaliser_donnees(df, exclude_cols=None):
-    if exclude_cols is None:
-        exclude_cols = []
-    numeric_cols = df.select_dtypes(include=np.number).columns
-    numeric_cols = [col for col in numeric_cols if df[col].nunique() > 2
-    and col.lower() not in [c.lower() for c in exclude_cols]
-    ]
-    if len(numeric_cols) == 0:
-        return df
 
-    scaler = StandardScaler()
-    df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
-
-    return df
 
 
 
@@ -93,23 +75,13 @@ def normaliser_donnees(df, exclude_cols=None):
 
 
 def clean_data(df):
-    report = {}
 
-    
-    df, missing_report = gestion_valeur_manquantes(df)
-    report["valeur_manquantes"] = missing_report
-
+    df = gestion_valeur_manquantes(df)
    
-    df, outliers_report = gestion_valeur_abberantes(df)
-    report["outliers_gerer"] = outliers_report
+    df = gestion_valeur_abberantes(df)
     
-    df, duplicates_removed = supp_doublons(df)
-    report["doublons_supprimer"] = duplicates_removed
-
-    
+    df = supp_doublons(df)
+   
     df = normaliser_texte(df)
-
-   
-    df = normaliser_donnees(df, exclude_cols=["id", "user_id", "client_id", "index"])
-
-    return df, report
+    
+    return df
