@@ -11,7 +11,8 @@ def gestion_valeur_manquantes(df):
     for col in df.columns:
         
         if df[col].dtype == "object":
-            df[col] = df[col].fillna("inconnu")
+            mode_value = df[col].mode()[0]
+            df[col] = df[col].fillna(mode_value)
         elif df[col].isna().mean()*100 >= 50:
             df.drop(columns=[col], inplace=True)
         else:

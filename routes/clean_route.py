@@ -8,6 +8,7 @@ from services.data_loader import load_file
 from services.exportation import export_file
 from services.pipeline.validators import valider_options
 from services.pipeline.pipeline_runner import run_pipeline
+from services.file_registry import FILE_REGISTRY
 
 clean_bp = Blueprint("clean", __name__)
 
@@ -37,14 +38,17 @@ def clean_file():
         return jsonify({"error": str(e)}), 400
     
     cleaned_df, stats_avant, stats_apres = run_pipeline(df, options)
-
+    
     output_path = export_file(cleaned_df, file.filename)
+
+    file_id = output_path['file_id']
+    FILE_REGISTRY[file_id] = output_path["path"]
 
     return jsonify({
         "statistiques_avant": stats_avant,
         "statistiques_apres": stats_apres,
         "fichier_sortie": output_path["output_filename"],
-        "download_url":f"/download/{output_path['file_id']}"
+        "download_url":f"/download/{file_id}"
         
     })
 
