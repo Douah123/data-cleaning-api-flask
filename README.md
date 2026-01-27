@@ -1,23 +1,82 @@
-# Data Cleaning API (Flask)
+## Data Cleaning API (Flask)
 
-API REST pour le nettoyage automatique de données.
+API REST développée avec Flask pour nettoyer automatiquement des fichiers de données
+(CSV, Excel, JSON, XML) et retourner un fichier prêt à l’analyse.
 
 ## Fonctionnalités
-- Import CSV, Excel, JSON, XML
-- Gestion des valeurs manquantes
-- Suppression des doublons
-- Détection et correction des outliers (IQR)
-- Normalisation des données
-- Export du fichier nettoyé avec le même nom
 
-## Technologies
-- Flask
-- Pandas
-- NumPy
-- Scikit-learn
+Chargement de fichiers (CSV, Excel, JSON, XML)
 
-## Lancer l’API
+Nettoyage automatique :
 
-```bash
+valeurs manquantes
+
+doublons
+
+valeurs aberrantes (IQR)
+
+normalisation du texte
+
+Normalisation numérique (optionnelle) :
+
+minmax
+
+zscore
+
+robust
+
+Statistiques avant / après nettoyage
+
+Téléchargement du fichier nettoyé
+
+## Structure du projet
+DATA_CLEANAPP/
+├── app.py
+├── routes/
+│   ├── clean_route.py
+│   └── download_route.py
+├── services/
+│   ├── data_loader.py
+│   ├── data_cleaner.py
+│   ├── normalisation.py
+│   ├── exportation.py
+│   ├── file_registry.py
+│   └── pipeline/
+│       ├── pipeline_runner.py
+│       ├── statistics.py
+│       └── validators.py
+└── outputs/
+
+## Endpoints
+POST /clean
+
+Paramètres (form-data)
+
+file : fichier à nettoyer
+
+normalize : true / false (optionnel)
+
+method : minmax | zscore | robust (optionnel)
+
+Réponse
+
+{
+  "statistiques_avant": {...},
+  "statistiques_apres": {...},
+  "download_url": "/download/<file_id>"
+}
+
+GET /download/<file_id>
+
+Télécharge le fichier nettoyé.
+
+## Installation
 pip install -r requirements.txt
 python app.py
+
+
+API disponible sur http://127.0.0.1:5000
+
+## Auteur
+
+Alpha Mamadou Douah Barry

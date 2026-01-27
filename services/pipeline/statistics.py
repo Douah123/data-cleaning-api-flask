@@ -28,12 +28,12 @@ def calcul_statt(df):
     nb_de_colonnes_numerics = int(len(df.select_dtypes(include= np.number).columns))
     nb_de_colonnes_texte = int(len(df.select_dtypes(include="object").columns))
     return {
-        "nb_de_lignes": nb_de_lignes,
-        "nb_de_colonnes": nb_de_colonnes,
-        "nb_valeur_manquantes": nb_valeur_manquantes,
-        "nb_valeurs_abberantes": nb_valeurs_abberantes,
-        "nb_doublons": nb_doublons,
-        "nb_de_colonnes_numerics": nb_de_colonnes_numerics,
-        "nb_de_colonnes_texte": nb_de_colonnes_texte
+        "Lignes": nb_de_lignes,
+        "Colonnes": nb_de_colonnes,
+        "Valeurs Manquantes": nb_valeur_manquantes,
+        "Valeurs Abberantes": nb_valeurs_abberantes,
+        "Doublons": nb_doublons,
+        "Colonnes Numeriques": nb_de_colonnes_numerics,
+        "Colonnes textes": nb_de_colonnes_texte
     }
 
