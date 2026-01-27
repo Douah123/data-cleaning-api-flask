@@ -8,4 +8,4 @@ uploads/
 templates/
 schemas/
 utils/
-idea/
+.idea/
