@@ -13,8 +13,11 @@ from services.file_registry import FILE_REGISTRY
 clean_bp = Blueprint("clean", __name__)
 
 @clean_bp.route("/clean", methods = ["POST"])
+print("clean_route loaded")
 
 def clean_file():
+    print("clean route called")
+
     if "file" not in request.files:
         return jsonify({"error": "Aucun fichier envoyé"}), 400
     file = request.files["file"]
