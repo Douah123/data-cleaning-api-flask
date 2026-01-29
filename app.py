@@ -14,3 +14,5 @@ app.register_blueprint(download_bp)
 def index():
     return{"message": "API IS RUNNING"}
 
+if __name__ == "__main__":
+    app.run(debug=True)

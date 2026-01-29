@@ -8,20 +8,29 @@ from unidecode import unidecode
 
 def gestion_valeur_manquantes(df):
 
-    for col in df.columns:
-        
-        if df[col].dtype == "object":
-            mode_value = df[col].mode()[0]
-            df[col] = df[col].fillna(mode_value)
-        elif df[col].isna().mean()*100 >= 50:
-            df.drop(columns=[col], inplace=True)
+    # 1️⃣ Supprimer les colonnes avec ≥ 50% de valeurs manquantes
+    cols_to_drop = df.columns[df.isna().mean() >= 0.5]
+    df = df.drop(columns=cols_to_drop)
+
+    # 2️⃣ Colonnes numériques
+    num_cols = df.select_dtypes(include="number").columns
+
+    for col in num_cols:
+        median_value = df[col].median()
+        if not np.isnan(median_value):
+            df[col] = df[col].fillna(median_value)
+
+    # 3️⃣ Colonnes catégorielles (texte)
+    cat_cols = df.select_dtypes(exclude="number").columns
+
+    for col in cat_cols:
+        mode = df[col].mode()
+        if not mode.empty:
+            df[col] = df[col].fillna(mode[0])
         else:
-            median_value = df[col].median()
-            if not np.isnan(median_value):
-                df[col].fillna(median_value, inplace=True)
+            df[col] = df[col].fillna("Unknown")
 
     return df
-
 def gestion_valeur_abberantes(df):
     
     numeric_cols = df.select_dtypes(include= np.number).columns
