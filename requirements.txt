@@ -5,4 +5,5 @@ openpyxl
 lxml
 unidecode
 gunicorn
+flask-cors
 scikit-learn
