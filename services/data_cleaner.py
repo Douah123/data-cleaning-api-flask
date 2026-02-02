@@ -8,11 +8,9 @@ from unidecode import unidecode
 
 def gestion_valeur_manquantes(df):
 
-    # 1️⃣ Supprimer les colonnes avec ≥ 50% de valeurs manquantes
     cols_to_drop = df.columns[df.isna().mean() >= 0.5]
     df = df.drop(columns=cols_to_drop)
 
-    # 2️⃣ Colonnes numériques
     num_cols = df.select_dtypes(include="number").columns
 
     for col in num_cols:
@@ -20,7 +18,6 @@ def gestion_valeur_manquantes(df):
         if not np.isnan(median_value):
             df[col] = df[col].fillna(median_value)
 
-    # 3️⃣ Colonnes catégorielles (texte)
     cat_cols = df.select_dtypes(exclude="number").columns
 
     for col in cat_cols:

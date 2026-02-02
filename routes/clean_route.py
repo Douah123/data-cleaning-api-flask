@@ -9,7 +9,7 @@ from services.exportation import export_file
 from services.pipeline.validators import valider_options
 from services.pipeline.pipeline_runner import run_pipeline
 from services.file_registry import FILE_REGISTRY
-
+from services.pipeline.statistics import calcul_statt
 clean_bp = Blueprint("clean", __name__)
 
 @clean_bp.route("/clean", methods = ["POST"])
@@ -53,3 +53,16 @@ def clean_file():
     })
 
 
+@clean_bp.route("/statavant", methods = ["POST"])
+
+def statavant_file():
+    if "file" not in request.files:
+        return jsonify({"error": "Aucun fichier envoyé"}), 400
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "Nom de fichier invalide"}), 400
+    df, file_type = load_file(file)
+    stats_avant = calcul_statt(df)
+    return jsonify({
+        "statistiques_avant": stats_avant
+    })

@@ -34,6 +34,6 @@ def calcul_statt(df):
         "Valeurs Abberantes": nb_valeurs_abberantes,
         "Doublons": nb_doublons,
         "Colonnes Numeriques": nb_de_colonnes_numerics,
-        "Colonnes textes": nb_de_colonnes_texte
+        "Colonnes textuelles": nb_de_colonnes_texte
     }
 
