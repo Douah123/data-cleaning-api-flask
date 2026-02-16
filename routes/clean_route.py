@@ -2,10 +2,12 @@
 #avec les options ou pas le nettoie et l'exporte avec un identifiant unique, une URL de telechargement
 # Et les statistiques avant et apres upload
 
-from flask import Blueprint, request, jsonify, request
-from services.data_cleaner import clean_data
+from flask import Blueprint, request, jsonify, session
+from models.clean_history import CleanHistory
+from services.db import db
 from services.data_loader import load_file
 from services.exportation import export_file
+from services.auth import login_required
 from services.pipeline.validators import valider_options
 from services.pipeline.pipeline_runner import run_pipeline
 from services.file_registry import FILE_REGISTRY
@@ -13,6 +15,7 @@ from services.pipeline.statistics import calcul_statt
 clean_bp = Blueprint("clean", __name__)
 
 @clean_bp.route("/clean", methods = ["POST"])
+@login_required
 
 def clean_file():
     if "file" not in request.files:
@@ -43,6 +46,15 @@ def clean_file():
 
     file_id = output_path['file_id']
     FILE_REGISTRY[file_id] = output_path["path"]
+    history_entry = CleanHistory(
+        user_id=session["user_id"],
+        file_id=file_id,
+        original_filename=file.filename,
+        output_filename=output_path["output_filename"],
+        output_path=output_path["path"],
+    )
+    db.session.add(history_entry)
+    db.session.commit()
 
     return jsonify({
         "statistiques_avant": stats_avant,
@@ -54,6 +66,7 @@ def clean_file():
 
 
 @clean_bp.route("/statavant", methods = ["POST"])
+@login_required
 
 def statavant_file():
     if "file" not in request.files:
