@@ -14,6 +14,8 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 def resolve_database_uri():
     database_url = os.getenv("DATABASE_URL")
     if database_url:
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql://", 1)
         return database_url
 
     mysql_host = os.getenv("MYSQL_HOST")
