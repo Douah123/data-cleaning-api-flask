@@ -6,6 +6,32 @@ import numpy as np
 from unidecode import unidecode
 
 
+def _to_numeric_series(series):
+    cleaned = (
+        series.astype(str)
+        .str.strip()
+        .replace({"": np.nan, "none": np.nan, "nan": np.nan, "null": np.nan})
+        .str.replace(",", "", regex=False)
+    )
+    return pd.to_numeric(cleaned, errors="coerce")
+
+
+def infer_and_convert_numeric_columns(df, min_valid_ratio=0.7):
+    object_cols = df.select_dtypes(exclude=np.number).columns
+    for col in object_cols:
+        if col.lower() in {"id"} or col.lower().endswith("_id"):
+            continue
+        original = df[col]
+        converted = _to_numeric_series(original)
+        non_null_count = original.notna().sum()
+        if non_null_count == 0:
+            continue
+        valid_ratio = converted.notna().sum() / non_null_count
+        if valid_ratio >= min_valid_ratio:
+            df[col] = converted
+    return df
+
+
 def gestion_valeur_manquantes(df):
 
     cols_to_drop = df.columns[df.isna().mean() >= 0.5]
@@ -31,6 +57,7 @@ def gestion_valeur_manquantes(df):
 def gestion_valeur_abberantes(df):
     
     numeric_cols = df.select_dtypes(include= np.number).columns
+    numeric_cols = [col for col in numeric_cols if col.lower() not in {"id"} and not col.lower().endswith("_id")]
     numeric_cols = [col for col in numeric_cols if df[col].nunique() > 2]
     for col in numeric_cols:
         Q1 = df[col].quantile(0.25)
@@ -86,12 +113,14 @@ def normaliser_texte(df):
 
 def clean_data(df):
 
+    df = infer_and_convert_numeric_columns(df)
+
     df = gestion_valeur_manquantes(df)
    
     df = gestion_valeur_abberantes(df)
     
-    df = supp_doublons(df)
-   
     df = normaliser_texte(df)
+
+    df = supp_doublons(df)
     
     return df
