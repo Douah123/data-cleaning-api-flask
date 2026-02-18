@@ -18,4 +18,5 @@ class CleanHistory(db.Model):
         return {
             "original_filename": self.original_filename,
             "cleaned_at": self.cleaned_at.isoformat() + "Z",
+            "file_id": self.file_id,
         }
