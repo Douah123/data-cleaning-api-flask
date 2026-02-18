@@ -34,7 +34,7 @@ def infer_and_convert_numeric_columns(df, min_valid_ratio=0.7):
 
 def gestion_valeur_manquantes(df):
 
-    cols_to_drop = df.columns[df.isna().mean() >= 0.5]
+    cols_to_drop = df.columns[df.isna().mean() >= 0.85]
     df = df.drop(columns=cols_to_drop)
 
     num_cols = df.select_dtypes(include="number").columns
