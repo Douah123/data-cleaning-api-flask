@@ -32,11 +32,24 @@ def resolve_database_uri():
     return "sqlite:///users.db"
 
 
+def resolve_cors_origins():
+    raw = os.getenv("CORS_ORIGINS", "").strip()
+    if not raw:
+        return ["http://localhost:4200"]
+
+    if raw == "*":
+        return "*"
+
+    return [origin.strip() for origin in raw.split(",") if origin.strip()]
+
+
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
 is_production = bool(os.getenv("RENDER")) or os.getenv("FLASK_ENV") == "production"
-cors_origins = os.getenv("CORS_ORIGINS", "*")
+cors_origins = resolve_cors_origins()
+if is_production and cors_origins == "*":
+    raise RuntimeError("CORS_ORIGINS must not be '*' in production when credentials are enabled")
 CORS(app, supports_credentials=True, origins=cors_origins)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret-change-me")
 if is_production and app.config["SECRET_KEY"] == "dev-secret-change-me":
