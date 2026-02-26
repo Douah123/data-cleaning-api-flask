@@ -57,7 +57,5 @@ def calcul_statt(df):
         "Valeurs Manquantes": nb_valeur_manquantes,
         "Valeurs Abberantes": nb_valeurs_abberantes,
         "Doublons": nb_doublons,
-        "Colonnes Numeriques": nb_de_colonnes_numerics,
-        "Colonnes textuelles": nb_de_colonnes_texte,
-        "Colonnes Categorielles": nb_de_colonnes_categorielles,
+        
     }
