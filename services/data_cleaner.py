@@ -158,7 +158,7 @@ def _clean_numeric_categorical_series(series, min_integer_share=0.8):
 
 def gestion_valeur_manquantes(df, max_unique=20, max_unique_ratio=0.5):
 
-    cols_to_drop = df.columns[df.isna().mean() >= 0.85]
+    cols_to_drop = df.columns[df.isna().mean() >= 0.7]
     df = df.drop(columns=cols_to_drop)
 
     object_cat_cols = set(df.select_dtypes(exclude="number").columns)
