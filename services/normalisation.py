@@ -2,7 +2,6 @@
 #avec la methode choisie
 
 import numpy as np
-import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 
 from services.data_cleaner import (
@@ -21,17 +20,6 @@ def _get_categorical_columns(df):
     numeric_cats = set(_detect_numeric_categorical_columns(working_df))
     return object_cats.union(numeric_cats)
 
-
-def _prepare_categorical_for_ohe(series):
-    if pd.api.types.is_numeric_dtype(series):
-        numeric = pd.to_numeric(series, errors="coerce")
-        non_null = numeric.dropna()
-        if not non_null.empty and np.isclose(non_null % 1, 0, atol=1e-9).all():
-            return numeric.round().astype("Int64").astype("string")
-        return numeric.astype("string")
-    return series.astype("string")
-
-
 def _is_id_like_column(col_name, exclude_cols):
     col_lower = col_name.lower()
     excluded_lower = {c.lower() for c in exclude_cols}
@@ -46,7 +34,7 @@ def _is_id_like_column(col_name, exclude_cols):
 
 def normaliser_donnees(df, method, exclude_cols=None):
     if exclude_cols is None:
-        exclude_cols = ["id", "user_id", "client_id", "index"]
+        exclude_cols = ["id", "user_id", "client_id", "index","SalePrice"]
 
     categorical_cols = _get_categorical_columns(df)
 
@@ -70,16 +58,5 @@ def normaliser_donnees(df, method, exclude_cols=None):
 
     if len(numeric_cols) > 0:
         df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
-
-    cat_cols_for_ohe = [col for col in sorted(categorical_cols) if col in df.columns]
-    if len(cat_cols_for_ohe) > 0:
-        for col in cat_cols_for_ohe:
-            df[col] = _prepare_categorical_for_ohe(df[col])
-        df = pd.get_dummies(
-            df,
-            columns=cat_cols_for_ohe,
-            dummy_na=False,
-            dtype=np.uint8,
-        )
 
     return df
